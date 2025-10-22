@@ -1,0 +1,173 @@
+import socket
+
+hostname=socket.gethostname()
+#host ka naam dega
+
+ipaddress=socket.gethostbyname(hostname)
+#ip address of host ayega
+
+#getting host by addr
+hname=socket.gethostbyaddr('192.168.1.1')
+
+
+#getting service name, given port number & protocol 
+
+protocol_name='tcp'
+ports=[25,80]
+for i in ports:
+    print(f" port: {i} service name: {socket.getservbyport(i,protocol_name)}")
+
+
+#port Scanner
+# importing the socket module:
+from socket import *
+
+# importing time module
+import time
+
+startTime = time.time()
+
+if __name__ == '__main__':
+    target = input("Enter the hostname to be scanned: ")
+    target_ip = gethostbyname(target)
+    print("Starting scan on host: ", target_ip)
+
+    for i in range(50, 500):
+        s = socket(AF_INET, SOCK_STREAM)
+        conn = s.connect_ex((target_ip, i))
+
+        if (conn == 0):
+            print("Port %d: OPEN" % (i,))
+        s.close()
+
+print("Time Taken in Seconds: ", time.time() - startTime)
+print("Time in Minutes: ", (time.time() - startTime) / 60)
+
+
+
+#SERVER
+import socket
+
+s = socket.socket()
+print("Socket created")
+
+s.bind(('localhost', 6666))
+s.listen(5)
+clientobj,adrr=s.accept()
+
+#server receive data
+'''gotmsg=clientobj.recv(1024)
+gotmsg.decode('utf-8')
+print(gotmsg)'''
+conn=True
+while conn:
+    gotmsg=clientobj.recv(1024)
+    gotmsg.decode('utf-8')
+    print(gotmsg)
+
+    if len(gotmsg)==0:
+        conn=False
+        s.close()
+#s.close()
+
+
+
+#CLIENT
+import socket
+s = socket.socket()
+
+s.connect(('localhost',6666))
+
+#to receive msg
+#print(s.recv(1024).decode())
+
+#to send msg from client side
+
+'''msg=input("Enter msg to send: ")
+s.send(msg.encode('utf-8'))
+s.close()'''
+
+#client data bhejta rahay
+conn=True
+while conn:
+    msg=input("Enter msg to send: ")
+    s.send(msg.encode('utf-8'))
+    if msg=='no':
+        conn=False
+        s.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#UDP SERVER
+import socket
+
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+s.bind(('localhost',8888))
+print('udp server running')
+
+#s.listen(5)
+
+while True:
+    client,addr=s.recvfrom(1024)
+    msg=client.decode()
+    print("Client: ",msg)
+
+    if msg.lower() == 'exit':
+        print("client disconnected")
+        break 
+
+    s.sendto('Hello udp client'.encode(),addr)
+
+
+#closing
+s.close()
+
+
+
+
+
+
+#UDP CLIENT
+
+import socket
+
+s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+
+addr=('localhost',8888)
+
+while True:
+    #input msg from user
+    msg=input("Enter message (type exit to quit)")
+
+    s.sendto(msg.encode(),addr)
+
+    if msg.lower() == 'exit':
+        print("closing connection")
+        break
+
+data, _ = s.recvfrom(1024)
+print("Message:", data.decode())
+
+
+s.close()
