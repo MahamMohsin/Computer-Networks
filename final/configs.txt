@@ -1,0 +1,11 @@
+WIRELESS SETUP:
+
+1.for pcs open physical tab remove disk and wmp wireless disk then turn on
+2. open setup assign IP address and dns start ip
+3. for changing network go to network tab in gui and change ssid name, click save setting
+4. go to wireless security and change security mode to WEP
+5. go to PCs click desktop then wireless device then go to connect select network and enter WEP key
+6. Setup ke neechay hee dhcp hoga
+
+PERFORMING SECURE COMMUNICAION ON SWITCH/ROUTER:
+

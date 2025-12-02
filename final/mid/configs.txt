@@ -1,0 +1,202 @@
+SWITCH CONFIG:
+
+switch> en
+switch# config t
+switch(config)# int vlan 1
+switch(config-t)# ip address 192.168.1.1 255.0.0.0
+switch(confi-t)# no shut
+
+FOR TELNET SETUP FOR BOTH SWITCH OR ROUTER:
+
+switch(config)# hostname s0
+s0(config)# enable password cisco
+s0(config)# ip domain-name maham
+s0(config)# username admin password cisco
+s0(config)# line vty 0 15
+s0(config-line)# login local
+s0(config-line)# transport input telnet
+exit krke
+s0(config)# do write
+
+
+
+
+FOR SSH CONFIGURATION ON ROUTER:
+switch> enable
+switch# configure terminal
+switch(config)# hostname s0
+s0(config)# ip domain-name maham
+s0(config)# username admin privilege 15 password cisco
+s0(config)# crypto key generate rsa
+How many bits in the modulus [512]: 1024
+ip ssh version 2
+s0(config)# line vty 0 15
+s0(config-line)# login local
+s0(config-line)# transport input ssh
+s0(config-line)# exit
+s0(config)# do write
+
+
+
+
+
+
+
+
+1. DNS Server Configuration
+
+ Convert domain names (like `www.xyz.com`) into IP addresses.
+
+
+
+1. Place a **Server** → Click → **Config tab** → **DNS**.
+2. Turn **DNS service ON**.
+3. In “Name” → type your domain (e.g., `www.xyz.com`).
+4. In “Address” → enter the web server’s IP (e.g., `192.168.1.2`).
+5. Click **Add**.
+6. On **Client PC** → Config → FastEthernet → set **Gateway & DNS Server IP**.
+7. On PC → Desktop → Command Prompt → `ping www.xyz.com`.
+
+ If reply is received → DNS works.
+
+
+
+2. DHCP Server Configuration
+
+ Automatically assign IPs to devices.
+
+**Steps:**
+
+1. Add **Server** → Config tab → **DHCP**.
+2. Turn **DHCP ON**.
+3. Set:
+
+   * **Pool Name:** LAN1
+   * **Default Gateway:** Router Interface IP (e.g., `192.168.1.1`)
+   * **DNS Server:** DNS IP
+   * **Start IP Address:** e.g., `192.168.1.10`
+   * **Subnet Mask:** e.g., `255.255.255.0`
+   * **Maximum Users:** e.g., 50
+4. Click **Save**.
+5. On PC → Config → FastEthernet → set to **DHCP**.
+6. PC will automatically get an IP, Gateway, and DNS.
+
+
+
+ 3. FTP Server Configuration
+
+**Goal:** File Transfer between Client and Server.
+
+1. Server → Config tab → **FTP** → turn **ON**.
+2. Add Username & Password (e.g., `user1`, `pass123`).
+3. On PC → Desktop → Command Prompt:
+
+   ```
+   ftp <server IP>
+   Username: user1
+   Password: pass123
+   ```
+4. Use commands like `dir`, `get <file>`, `put <file>`.
+
+
+
+ 4. SMTP & POP3 (Mail Server)
+
+**Goal:** Send and receive emails.
+
+**Steps:
+
+1. Add **Server** → Config → **Email**.
+2. Turn **SMTP & POP3 ON**.
+3. Add users:
+
+   * `name: user1`, `domain: mail.com`, `password: pass123`
+4. On **Client PC** → Desktop → Email.
+5. Configure:
+
+   * **Display name:** User1
+   * **Email address:** `user1@mail.com`
+   * **Incoming Mail (POP3):** mail server IP
+   * **Outgoing Mail (SMTP):** mail server IP
+6. Test by sending emails between PCs.
+
+
+5. Web Server Configuration (HTTP/HTTPS)
+
+**Goal:** Host and access websites.
+
+**Steps:**
+
+1. Server → Config tab → **HTTP** → turn **ON**.
+2. Optional: also enable **HTTPS**.
+3. On PC → Desktop → Web Browser → type:
+
+   http://<web server IP>
+   
+
+   or if DNS configured:
+
+ 
+   http://www.xyz.com
+   
+
+
+##6. ACL (Access Control List) Configuration
+Restrict or allow traffic.
+
+Standard ACL (based on Source IP)
+
+1. Go to Router → CLI.
+2. Example:
+
+  
+   R1(config)# access-list 1 deny 192.168.10.0 0.0.0.255
+   R1(config)# access-list 1 permit any
+   R1(config)# interface fa0/0
+   R1(config-if)# ip access-group 1 in
+  
+   ⮕ Blocks 192.168.10.0 network from entering fa0/0.
+
+
+ Extended ACL (based on Source, Destination, Protocol)
+
+1. Example:
+
+   R1(config)# access-list 101 deny tcp 192.168.1.0 0.0.0.255 192.168.2.0 0.0.0.255 eq www
+   R1(config)# access-list 101 permit ip any any
+   R1(config)# interface fa0/0
+   R1(config-if)# ip access-group 101 out
+
+   ⮕ Blocks HTTP traffic from students to teachers.
+
+
+ TELNET Configuration
+1. Router → CLI:
+   R1(config)# line vty 0 4
+   R1(config-line)# password cisco
+   R1(config-line)# login
+   R1(config)# enable password cisco
+   R1(config)# service password-encryption
+
+2. On Client PC:
+   telnet <router IP>
+
+
+
+8. SSH Configuration
+Secure remote access.
+
+1. Router → CLI:
+   R1(config)# hostname R1
+   R1(config)# ip domain-name cisco.com
+   R1(config)# crypto key generate rsa
+   (choose 1024 bits)
+   R1(config)# username admin password cisco
+   R1(config)# line vty 0 4
+   R1(config-line)# login local
+   R1(config-line)# transport input ssh
+   ```
+2. On PC:
+
+   ssh -l admin <router IP>
+
